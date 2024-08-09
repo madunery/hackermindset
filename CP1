@@ -1,0 +1,28 @@
+#!/bin/bash
+
+obter_informacoes_sistema() {
+   nome_sistema=$(uname -s)
+   versao_sistema=$(uname -r)
+   arquitetura=$(uname -m)
+
+   usuario=$(whoami)
+   diretorio_home=$HOME
+
+   saida="Informações do sistema:"
+   saida+="\n  Nome do sistema: $nome_sistema"
+   saida+="\n  Versão do sistema: $versao_sistema"
+   saida+="\n  Arquitetura: $arquitetura\n"
+   saida+="\nInformações do usuário:"
+   saida+="\n  Nome de usuário: $usuario"
+   saida+="\n  Diretório home: $diretorio_home"
+   echo "$saida"
+}
+if [ "$1" != "-output" ] || [ -z "$2" ]; then
+   echo "Uso: $0 -output ARQUIVO"
+   exit 1
+fi
+
+nome_arquivo="$2"
+informacoes=$(obter_informacoes_sistema)
+echo "$informacoes" > "$nome_arquivo"
+echo "Saída salva no arquivo: $nome_arquivo"
