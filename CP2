@@ -1,0 +1,52 @@
+#!/bin/bash
+ 
+# Função para extrair informações do site
+extract_info() {
+    local url="$1"
+    local title
+    local server
+    local language
+ 
+    # Obter o título do site
+    title=$(curl -s "$url" | grep -oP '<title>\K.*?(?=<\/title>)')
+ 
+    # Obter informações do cabeçalho HTTP (servidor)
+    server=$(curl -I -s "$url" | grep -i '^server:' | awk '{print $2}')
+ 
+    # Detectar a linguagem de programação 
+    language=$(curl -I -s "$url" | grep -i '^content-type:' | awk -F'[ ;]' '{print $2}')
+ 
+    echo "Título do site: $title"
+    echo "Servidor web: $server"
+    echo "Linguagem de programação: $language"
+}
+ 
+# Exemplo de uso
+extract_info "https://www.wikipedia.org"
+
+      
+
+      #!/bin/bash
+ 
+# Função para extrair URLs do site
+extract_urls() {
+    local url="$1"
+    curl -s "$url" | grep -oP 'href="\K[^"]+' | while read -r link; do
+        echo "$link"
+    done
+}
+ 
+# Função para extrair formulários e inputs de texto
+extract_forms_and_inputs() {
+    local url="$1"
+    curl -s "$url" | grep -oP '<form.*?</form>' | while read -r form; do
+        echo "Formulário encontrado:"
+        echo "$form" | grep -oP 'name="\K[^"]+' | while read -r input; do
+            echo "  - Input: $input"
+        done
+    done
+}
+ 
+# Exemplo de uso
+extract_urls "https://www.wikipedia.org"
+extract_forms_and_inputs "https://www.wikipedia.org"
